@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby 
 # hairdressing.rb
 
-require_relative 'Chair'
+require_relative 'chair'
 require_relative 'client'
 
 
@@ -15,30 +15,33 @@ clients_number = 0
 	chairs << Chair.new
 end
 
-clients = Thread.new do 
-       sleep(rand(3));
+
+hilo = Thread.new do 
        while(clients_number < 21) do
+        sleep(rand(3));
        mutex.synchronize { 
           queue.push Client.new 
        }
        clients_number+=1
    end
 end
-clients.join
 
+hilo.join
+
+4.times do |number|
 hairdressers << Thread.new do 
-    unless queue.empty?
-    number = rand(3)
-    mutex.synchronize { 
-    	if(chairs[number].empty?)
-      	chairs[number].attend(queue.shift.id?)
-      	end
-    }
-    sleep(rand(27))
+      while (!queue.empty?) do
+        mutex.synchronize { 
+          chairs[number].attend(queue.shift.id?)
+        }
+        sleep(rand(5))
+      end
     end
 end
+
 
 hairdressers.each do |thread|
 	thread.join
 end
+
 

@@ -3,7 +3,7 @@ class Chair
   @@number = 0
 
   def initialize
-  	@@number+1
+  	@@number+=1
   	@number = @@number
   end
 
